@@ -1,11 +1,11 @@
 package pg.packet_generator.domain.sendinfo;
 
-import lombok.Getter;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 @ToString
-@Getter // getter, setter 등의 정보가 없이는 deserialize 가 불가능하다.
 @RequiredArgsConstructor
 public class SendUdpInfo implements SendInformation {
     private String address;
@@ -14,4 +14,19 @@ public class SendUdpInfo implements SendInformation {
 
     private int repeatCount;
     private long interval;
+
+
+    @JsonCreator
+    public SendUdpInfo(
+            @JsonProperty("address")String address,
+            @JsonProperty("port")int port,
+            @JsonProperty("repeated") boolean repeated,
+            @JsonProperty("repeatCount") int repeatCount,
+            @JsonProperty("interval") long interval) {
+        this.address = address;
+        this.port = port;
+        this.repeated = repeated;
+        this.repeatCount = repeatCount;
+        this.interval = interval;
+    }
 }
