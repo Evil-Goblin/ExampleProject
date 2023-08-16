@@ -1,0 +1,14 @@
+package pg.packet_generator.domain.packet;
+
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
+public class ColumnShort implements PacketColumn {
+
+    private short data;
+
+    @Override
+    public Object getData() {
+        return data;
+    }
+}
