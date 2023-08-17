@@ -12,4 +12,9 @@ public class ColumnTIme implements PacketColumn {
     public Object getData() {
         return fixed ? data : System.currentTimeMillis();
     }
+
+    @Override
+    public int getSize() {
+        return 8;
+    }
 }

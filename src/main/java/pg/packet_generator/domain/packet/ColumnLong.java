@@ -12,4 +12,9 @@ public class ColumnLong implements PacketColumn {
     public Object getData() {
         return data;
     }
+
+    @Override
+    public int getSize() {
+        return 8;
+    }
 }

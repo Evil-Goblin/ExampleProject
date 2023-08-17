@@ -11,4 +11,9 @@ public class ColumnString implements PacketColumn {
     public Object getData() {
         return data;
     }
+
+    @Override
+    public int getSize() {
+        return data.length();
+    }
 }

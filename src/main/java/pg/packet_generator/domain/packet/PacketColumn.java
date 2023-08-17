@@ -19,5 +19,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 public interface PacketColumn {
 
     Object getData();
+
+    int getSize();
 }
 

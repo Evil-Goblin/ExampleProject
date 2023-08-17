@@ -11,4 +11,10 @@ public class PacketData {
     private List<PacketColumn> header;
     private List<PacketColumn> body;
     private List<PacketColumn> tail;
+
+    public int getSize() {
+        return header.stream().mapToInt(PacketColumn::getSize).sum()
+                + body.stream().mapToInt(PacketColumn::getSize).sum()
+                + tail.stream().mapToInt(PacketColumn::getSize).sum();
+    }
 }
