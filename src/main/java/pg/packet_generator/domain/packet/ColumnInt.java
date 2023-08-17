@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 public class ColumnInt implements PacketColumn {
 
     private int data;
+    private int increase;
 
     @Override
     public Object getData() {
