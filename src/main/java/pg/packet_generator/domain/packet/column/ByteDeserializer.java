@@ -1,4 +1,4 @@
-package pg.packet_generator.domain.packet;
+package pg.packet_generator.domain.packet.column;
 
 import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonParser;

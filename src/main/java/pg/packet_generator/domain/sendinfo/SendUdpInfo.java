@@ -62,6 +62,7 @@ public class SendUdpInfo implements SendInformation {
         }
     }
 
+    @Override
     public boolean repeatValueValidation() {
         return repeatCount >= 0 || interval != 0;
     }

@@ -1,6 +1,7 @@
-package pg.packet_generator.domain.packet;
+package pg.packet_generator.domain.packet.column;
 
 import lombok.RequiredArgsConstructor;
+import pg.packet_generator.domain.Buffer;
 
 @RequiredArgsConstructor
 public class ColumnInt implements PacketColumn {
@@ -14,7 +15,17 @@ public class ColumnInt implements PacketColumn {
     }
 
     @Override
+    public void increaseData() {
+        data += increase;
+    }
+
+    @Override
     public int getSize() {
         return 4;
+    }
+
+    @Override
+    public void write(Buffer buffer) {
+        buffer.writeInt(data);
     }
 }

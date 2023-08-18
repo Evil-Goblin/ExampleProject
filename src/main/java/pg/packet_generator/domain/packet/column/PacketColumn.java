@@ -1,8 +1,9 @@
-package pg.packet_generator.domain.packet;
+package pg.packet_generator.domain.packet.column;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import pg.packet_generator.domain.packet.Packet;
 
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,
@@ -16,10 +17,10 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
         @Type(value = ColumnByteArray.class, name = "bytearray"),
         @Type(value = ColumnString.class, name = "string"),
 })
-public interface PacketColumn {
+public interface PacketColumn extends Packet {
 
     Object getData();
 
-    int getSize();
+    void increaseData();
 }
 

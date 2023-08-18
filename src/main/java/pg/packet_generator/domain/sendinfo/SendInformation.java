@@ -16,4 +16,6 @@ public interface SendInformation {
     ConnectionHandler getConnectionHandler();
 
     void executeIteratedJop(PacketSender sender);
+
+    boolean repeatValueValidation();
 }
