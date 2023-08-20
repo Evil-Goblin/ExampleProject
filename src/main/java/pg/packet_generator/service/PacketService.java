@@ -2,6 +2,7 @@ package pg.packet_generator.service;
 
 import org.springframework.stereotype.Service;
 import pg.packet_generator.domain.GenerateSpecification;
+import pg.packet_generator.scheduler.PacketScheduler;
 
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -18,9 +19,10 @@ public class PacketService implements SendService {
 
     @Override
     public void execute(GenerateSpecification generateSpecification) {
-        Runnable target = generateSpecification.getRunnable();
+        PacketScheduler target = generateSpecification.getRunnable();
         long interval = generateSpecification.getSendInformation().getInterval();
 
         ScheduledFuture<?> scheduledFuture = executorService.scheduleAtFixedRate(target, 0, interval, TimeUnit.MILLISECONDS);
+        target.setScheduledFuture(scheduledFuture);
     }
 }

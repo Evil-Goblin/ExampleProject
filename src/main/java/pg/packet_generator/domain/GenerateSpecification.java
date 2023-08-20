@@ -13,7 +13,7 @@ public class GenerateSpecification {
     private SendInformation sendInformation;
     private PacketData packetData;
 
-    public Runnable getRunnable() {
+    public PacketScheduler getRunnable() {
         ConnectionHandler connectionHandler = sendInformation.getConnectionHandler();
         connectionHandler.init();
 
