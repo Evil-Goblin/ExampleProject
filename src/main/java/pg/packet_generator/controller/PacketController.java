@@ -6,12 +6,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pg.packet_generator.domain.GenerateSpecification;
-import pg.packet_generator.domain.packet.column.PacketColumn;
-import pg.packet_generator.domain.packet.PacketData;
+import pg.packet_generator.domain.packet.Packet;
 import pg.packet_generator.domain.sendinfo.SendInformation;
 import pg.packet_generator.service.SendService;
-
-import java.util.List;
 
 @Slf4j
 @RestController
@@ -33,23 +30,10 @@ public class PacketController {
             return "error";
         }
 
-        PacketData packetData = generateSpecification.getPacketData();
-
-        List<PacketColumn> header = packetData.getHeader();
-        List<PacketColumn> body = packetData.getBody();
-        List<PacketColumn> tail = packetData.getTail();
-        for (PacketColumn packetColumn : header) {
-            log.info("[PacketController:generate] header {}={}", packetColumn.getClass().getName(), packetColumn.getData());
-        }
-        for (PacketColumn packetColumn : body) {
-            log.info("[PacketController:generate] body {}={}", packetColumn.getClass().getName(), packetColumn.getData());
-        }
-        for (PacketColumn packetColumn : tail) {
-            log.info("[PacketController:generate] tail {}={}", packetColumn.getClass().getName(), packetColumn.getData());
-        }
+        Packet packetData = generateSpecification.getPacketData();
 
         try {
-            sendService.execute(sendInformation, packetData);
+            sendService.execute(generateSpecification);
         } catch (RuntimeException e) {
             // TODO: error handler
             return "error";

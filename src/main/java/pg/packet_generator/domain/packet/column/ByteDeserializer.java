@@ -4,15 +4,12 @@ import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
-import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 
-@Slf4j
 public class ByteDeserializer extends JsonDeserializer<byte[]> {
     @Override
     public byte[] deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JacksonException {
-        log.info("[ByteDeserializer:deserialize] target: {}", p.getText());
         return stringToBytes(p.getText());
     }
 
