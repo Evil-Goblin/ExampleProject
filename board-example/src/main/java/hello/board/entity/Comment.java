@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 @Entity
 public class Comment extends BaseEntity {
 
+    public static final int MAX_DEPTH = 5;
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "comment_id")
@@ -64,10 +66,14 @@ public class Comment extends BaseEntity {
     }
 
     public Comment newReplyComment(Post post, String comment) {
+        if (this.depth >= MAX_DEPTH) {
+            throw new IllegalStateException(/*MAXIMUM depth*/);
+        }
+
         return Comment.builder()
                 .post(post)
                 .comment(comment)
-                .depth(this.depth++)
+                .depth(this.depth + 1)
                 .leftNode(this.rightNode)
                 .rightNode(this.rightNode + 1)
                 .rootComment(this.rootComment)
