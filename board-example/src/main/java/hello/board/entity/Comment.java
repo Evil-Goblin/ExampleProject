@@ -1,10 +1,9 @@
 package hello.board.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+@ToString(of = {"id", "content", "active"})
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 public class Comment extends BaseEntity {
@@ -21,7 +20,7 @@ public class Comment extends BaseEntity {
     private Post post;
 
     @Lob
-    private String comment;
+    private String content;
 
     @Column(nullable = false)
     private Long depth = 0L;
@@ -43,15 +42,15 @@ public class Comment extends BaseEntity {
     @Column(nullable = false)
     private boolean active = true;
 
-    public Comment(Post post, String comment) {
+    public Comment(Post post, String content) {
         this.post = post;
-        this.comment = comment;
+        this.content = content;
     }
 
     @Builder
-    private Comment(Post post, String comment, Long depth, Long leftNode, Long rightNode, Comment rootComment, Comment parent) {
+    private Comment(Post post, String content, Long depth, Long leftNode, Long rightNode, Comment rootComment, Comment parent) {
         this.post = post;
-        this.comment = comment;
+        this.content = content;
         this.depth = depth;
         this.leftNode = leftNode;
         this.rightNode = rightNode;
@@ -65,14 +64,14 @@ public class Comment extends BaseEntity {
         return comment1;
     }
 
-    public Comment newReplyComment(Post post, String comment) {
+    public Comment newReplyComment(String content) {
         if (this.depth >= MAX_DEPTH) {
             throw new IllegalStateException(/*MAXIMUM depth*/);
         }
 
         return Comment.builder()
-                .post(post)
-                .comment(comment)
+                .post(this.post)
+                .content(content)
                 .depth(this.depth + 1)
                 .leftNode(this.rightNode)
                 .rightNode(this.rightNode + 1)
@@ -83,5 +82,13 @@ public class Comment extends BaseEntity {
 
     private void setRootComment(Comment comment) {
         this.rootComment = comment;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public Long getLeftNode() {
+        return leftNode;
     }
 }
