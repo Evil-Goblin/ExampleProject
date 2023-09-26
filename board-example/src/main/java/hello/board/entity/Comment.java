@@ -58,10 +58,11 @@ public class Comment extends BaseEntity {
         this.parent = parent;
     }
 
-    static public Comment newComment(Post post, String comment) {
-        Comment comment1 = new Comment(post, comment);
-        comment1.setRootComment(comment1);
-        return comment1;
+    static public Comment newComment(Post post, String content) {
+        Comment comment = new Comment(post, content);
+        comment.setRootComment(comment);
+        post.addComment(comment);
+        return comment;
     }
 
     public Comment newReplyComment(String content) {
@@ -69,15 +70,18 @@ public class Comment extends BaseEntity {
             throw new IllegalStateException(/*MAXIMUM depth*/);
         }
 
-        return Comment.builder()
-                .post(this.post)
+        Comment replyComment = Comment.builder()
+                .post(post)
                 .content(content)
-                .depth(this.depth + 1)
-                .leftNode(this.rightNode)
-                .rightNode(this.rightNode + 1)
-                .rootComment(this.rootComment)
+                .depth(depth + 1)
+                .leftNode(rightNode)
+                .rightNode(rightNode + 1)
+                .rootComment(rootComment)
                 .parent(this)
                 .build();
+
+        post.addComment(replyComment);
+        return replyComment;
     }
 
     private void setRootComment(Comment comment) {
@@ -90,5 +94,9 @@ public class Comment extends BaseEntity {
 
     public Long getLeftNode() {
         return leftNode;
+    }
+
+    public void deactivate() {
+        active = false;
     }
 }
