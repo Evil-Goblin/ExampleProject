@@ -50,6 +50,21 @@ public class CommentRepositoryCustomImpl implements CommentRepositoryCustom {
         em.persist(replyComment);
     }
 
+    public long deleteByPost(Post post) {
+        long leafCount = jpaQueryFactory
+                .delete(comment)
+                .where(comment.post.eq(post)
+                        .and(comment.rootComment.ne(comment)))
+                .execute();
+
+        long rootCount = jpaQueryFactory
+                .delete(comment)
+                .where(comment.post.eq(post)
+                        .and(comment.rootComment.eq(comment)))
+                .execute();
+        return leafCount + rootCount;
+    }
+
     private void updateNodeNumber(Long nodeNumber) {
         jpaQueryFactory
                 .update(comment)

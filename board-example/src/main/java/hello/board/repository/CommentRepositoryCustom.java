@@ -9,4 +9,5 @@ public interface CommentRepositoryCustom {
 
     Page<Comment> commentsOfPost(Post post, Pageable pageable);
     void saveReplyComment(Comment replyComment);
+    long deleteByPost(Post post);
 }

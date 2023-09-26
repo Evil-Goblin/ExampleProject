@@ -10,6 +10,7 @@ public class Comment extends BaseEntity {
 
     public static final int MAX_DEPTH = 5;
 
+    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "comment_id")
@@ -35,10 +36,6 @@ public class Comment extends BaseEntity {
     @JoinColumn(name = "root_comment_id")
     private Comment rootComment;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "parent_comment_id")
-    private Comment parent;
-
     @Column(nullable = false)
     private boolean active = true;
 
@@ -48,20 +45,19 @@ public class Comment extends BaseEntity {
     }
 
     @Builder
-    private Comment(Post post, String content, Long depth, Long leftNode, Long rightNode, Comment rootComment, Comment parent) {
+    private Comment(Post post, String content, Long depth, Long leftNode, Long rightNode, Comment rootComment) {
         this.post = post;
         this.content = content;
         this.depth = depth;
         this.leftNode = leftNode;
         this.rightNode = rightNode;
         this.rootComment = rootComment;
-        this.parent = parent;
     }
 
     static public Comment newComment(Post post, String content) {
         Comment comment = new Comment(post, content);
         comment.setRootComment(comment);
-        post.addComment(comment);
+
         return comment;
     }
 
@@ -70,18 +66,14 @@ public class Comment extends BaseEntity {
             throw new IllegalStateException(/*MAXIMUM depth*/);
         }
 
-        Comment replyComment = Comment.builder()
+        return Comment.builder()
                 .post(post)
                 .content(content)
                 .depth(depth + 1)
                 .leftNode(rightNode)
                 .rightNode(rightNode + 1)
                 .rootComment(rootComment)
-                .parent(this)
                 .build();
-
-        post.addComment(replyComment);
-        return replyComment;
     }
 
     private void setRootComment(Comment comment) {

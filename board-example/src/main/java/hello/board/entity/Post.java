@@ -3,9 +3,6 @@ package hello.board.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @ToString(of = {"id", "title", "content"})
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
@@ -23,9 +20,6 @@ public class Post extends BaseEntity {
     @Lob
     private String content;
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private List<Comment> commentList = new ArrayList<>();
-
     @Builder
     public Post(String title, String content) {
         this.title = title;
@@ -38,9 +32,5 @@ public class Post extends BaseEntity {
 
     public void updateContent(String content) {
         this.content = content;
-    }
-
-    public void addComment(Comment comment) {
-        commentList.add(comment);
     }
 }

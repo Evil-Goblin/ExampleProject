@@ -1,6 +1,7 @@
 package hello.board.service;
 
 import hello.board.dto.CommentInsertDto;
+import hello.board.dto.CommentReplyInsertDto;
 import hello.board.dto.PostDto;
 import hello.board.entity.Comment;
 import hello.board.repository.CommentRepository;
@@ -15,7 +16,10 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
-class CommentServiceTest {
+class PageServiceTest {
+
+    @Autowired
+    PageService pageService;
 
     @Autowired
     PostService postService;
@@ -24,14 +28,14 @@ class CommentServiceTest {
     CommentService commentService;
 
     @Autowired
-    PostRepository postRepository;
-
-    @Autowired
     CommentRepository commentRepository;
 
+    @Autowired
+    PostRepository postRepository;
+
     @Test
-    @DisplayName("Post를 삭제하면 Post에 대한 댓글들이 모두 삭제된다.")
-    void deleteCascadeTest() { // 이거 delete 쿼리가 개별로 나감으로 그냥 직접 구현하는 방법으로 변경해야할 것 같다.
+    @DisplayName("Post를 삭제하면 관련된 Comment가 전부 삭제된다.")
+    void deleteCascade() {
         PostDto postDto = new PostDto("title", "content");
         Long postId = postService.savePost(postDto);
 
@@ -43,7 +47,15 @@ class CommentServiceTest {
         List<Comment> all = commentRepository.findAll();
         assertThat(all.size()).isEqualTo(3);
 
-        postService.deletePost(postId);
+        Long commentId = all.get(1).getId();
+        CommentReplyInsertDto replyComment = new CommentReplyInsertDto(postId, commentId, "replyComment");
+        commentService.saveReplyComment(replyComment);
+
+        List<Comment> comments = commentRepository.findAll();
+        assertThat(comments.size()).isEqualTo(4);
+
+        System.out.println("===========REMOVE===========");
+        pageService.removePost(postId);
 
         List<Comment> deletedComments = commentRepository.findAll();
         assertThat(deletedComments.size()).isEqualTo(0);
