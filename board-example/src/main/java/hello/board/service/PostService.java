@@ -43,11 +43,6 @@ public class PostService {
         }
     }
 
-    @Transactional
-    public void deletePost(Long postId) {
-        postRepository.deleteById(postId);
-    }
-
     private Post postById(PostUpdateDto postUpdateDto) {
         return postRepository.findById(postUpdateDto.getPostId())
                 .orElseThrow(IllegalArgumentException::new);
