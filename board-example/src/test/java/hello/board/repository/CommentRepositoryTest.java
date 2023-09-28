@@ -163,4 +163,78 @@ class CommentRepositoryTest {
         assertThatThrownBy(() -> finalTmp.newReplyComment("OverMaximumReplyComment"))
                 .isInstanceOf(IllegalStateException.class);
     }
+
+    @Test
+    @DisplayName("대댓글을 작성할 때마다 노드번호가 두개 씩 증가한다.")
+    void increaseNodeNumberTest() {
+        Post post = new Post("title", "content");
+        postRepository.save(post);
+
+        String commentContent = "content";
+        Comment commentA = Comment.newComment(post, commentContent);
+        commentRepository.save(commentA);
+
+        for (int i = 1; i <= 2; i++) {
+            List<Comment> resultList = em.createQuery("select c from Comment c where c.id = :commentId and (c.leftNode = :nodeNumber or c.rightNode = :nodeNumber)", Comment.class)
+                    .setParameter("commentId", commentA.getId())
+                    .setParameter("nodeNumber", i)
+                    .getResultList();
+
+            assertThat(resultList.size()).isEqualTo(1);
+        }
+
+        Comment commentB = Comment.newComment(post, commentContent);
+        commentRepository.save(commentB);
+
+        for (int i = 1; i <= 2; i++) {
+            List<Comment> resultList = em.createQuery("select c from Comment c where c.id = :commentId and (c.leftNode = :nodeNumber or c.rightNode = :nodeNumber)", Comment.class)
+                    .setParameter("commentId", commentB.getId())
+                    .setParameter("nodeNumber", i)
+                    .getResultList();
+
+            assertThat(resultList.size()).isEqualTo(1);
+        }
+
+        Comment replyCommentA = saveReplyAndClear(commentA, "newContent");
+
+        for (int i = 1; i <= 4; i++) {
+            List<Comment> resultList = em.createQuery("select c from Comment c where c.rootComment = :rootComment and (c.leftNode = :nodeNumber or c.rightNode = :nodeNumber)", Comment.class)
+                    .setParameter("rootComment", commentA)
+                    .setParameter("nodeNumber", i)
+                    .getResultList();
+
+            assertThat(resultList.size()).isEqualTo(1);
+        }
+
+        Comment rereplyCommentA = saveReplyAndClear(replyCommentA, "newReplyContent");
+
+        Comment replyCommentB = saveReplyAndClear(commentB, "newContent");
+
+        for (int i = 1; i <= 6; i++) {
+            List<Comment> resultList = em.createQuery("select c from Comment c where c.rootComment = :rootComment and (c.leftNode = :nodeNumber or c.rightNode = :nodeNumber)", Comment.class)
+                    .setParameter("rootComment", commentA)
+                    .setParameter("nodeNumber", i)
+                    .getResultList();
+
+            assertThat(resultList.size()).isEqualTo(1);
+        }
+
+        for (int i = 1; i <= 4; i++) {
+            List<Comment> resultList = em.createQuery("select c from Comment c where c.rootComment = :rootComment and (c.leftNode = :nodeNumber or c.rightNode = :nodeNumber)", Comment.class)
+                    .setParameter("rootComment", commentB)
+                    .setParameter("nodeNumber", i)
+                    .getResultList();
+
+            assertThat(resultList.size()).isEqualTo(1);
+        }
+    }
+
+    private Comment saveReplyAndClear(Comment replyCommentA, String newReplyContent) {
+        Comment rereplyCommentA = replyCommentA.newReplyComment(newReplyContent);
+        commentRepository.saveReplyComment(rereplyCommentA);
+
+        em.flush();
+        em.clear();
+        return rereplyCommentA;
+    }
 }

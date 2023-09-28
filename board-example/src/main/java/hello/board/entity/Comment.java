@@ -3,14 +3,14 @@ package hello.board.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-@ToString(of = {"id", "content", "active"})
+@Getter
+@ToString(of = {"id", "content", "leftNode", "rightNode", "active"})
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 public class Comment extends BaseEntity {
 
     public static final int MAX_DEPTH = 5;
 
-    @Getter
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "comment_id")
@@ -76,19 +76,11 @@ public class Comment extends BaseEntity {
                 .build();
     }
 
-    private void setRootComment(Comment comment) {
-        this.rootComment = comment;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public Long getLeftNode() {
-        return leftNode;
-    }
-
     public void deactivate() {
         active = false;
+    }
+
+    private void setRootComment(Comment comment) {
+        this.rootComment = comment;
     }
 }

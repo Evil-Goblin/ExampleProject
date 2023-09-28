@@ -1,5 +1,6 @@
 package hello.board.repository;
 
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -45,7 +46,7 @@ public class CommentRepositoryCustomImpl implements CommentRepositoryCustom {
     }
 
     public void saveReplyComment(Comment replyComment) {
-        updateNodeNumber(replyComment.getLeftNode());
+        updateNodeNumber(replyComment);
 
         em.persist(replyComment);
     }
@@ -65,16 +66,33 @@ public class CommentRepositoryCustomImpl implements CommentRepositoryCustom {
         return leafCount + rootCount;
     }
 
-    private void updateNodeNumber(Long nodeNumber) {
+    private void updateNodeNumber(Comment replyComment) { // TODO: rootNode 검사 조건이 누락됨
         jpaQueryFactory
                 .update(comment)
                 .set(comment.leftNode, new CaseBuilder()
-                        .when(comment.leftNode.goe(nodeNumber))
+                        .when(leftNodeGOE(replyComment))
                         .then(comment.leftNode.add(2))
                         .otherwise(comment.leftNode))
                 .set(comment.rightNode, comment.rightNode.add(2))
-                .where(comment.leftNode.goe(nodeNumber)
-                        .or(comment.rightNode.goe(nodeNumber)))
+                .where(
+                        rootCommentEqualTo(replyComment)
+                                .and(
+                                        leftNodeGOE(replyComment)
+                                                .or(rightNodeGOE(replyComment))
+                                )
+                )
                 .execute();
+    }
+
+    private BooleanExpression rightNodeGOE(Comment replyComment) {
+        return comment.rightNode.goe(replyComment.getLeftNode());
+    }
+
+    private BooleanExpression leftNodeGOE(Comment replyComment) {
+        return comment.leftNode.goe(replyComment.getLeftNode());
+    }
+
+    private BooleanExpression rootCommentEqualTo(Comment replyComment) {
+        return comment.rootComment.eq(replyComment.getRootComment());
     }
 }
