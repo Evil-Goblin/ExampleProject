@@ -66,7 +66,7 @@ public class CommentRepositoryCustomImpl implements CommentRepositoryCustom {
         return leafCount + rootCount;
     }
 
-    private void updateNodeNumber(Comment replyComment) { // TODO: rootNode 검사 조건이 누락됨
+    private void updateNodeNumber(Comment replyComment) {
         jpaQueryFactory
                 .update(comment)
                 .set(comment.leftNode, new CaseBuilder()
