@@ -80,6 +80,10 @@ public class Comment extends BaseEntity {
         active = false;
     }
 
+    public void updateContent(String content) {
+        this.content = content;
+    }
+
     private void setRootComment(Comment comment) {
         this.rootComment = comment;
     }

@@ -2,17 +2,16 @@ package hello.board.service;
 
 import hello.board.dto.CommentInsertDto;
 import hello.board.dto.CommentReplyInsertDto;
+import hello.board.dto.CommentUpdateDto;
 import hello.board.entity.Comment;
 import hello.board.entity.Post;
 import hello.board.repository.CommentRepository;
 import hello.board.repository.PostRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -38,7 +37,7 @@ class CommentServiceTest {
         CommentInsertDto comment = new CommentInsertDto(post.getId(), commentString);
         commentService.saveComment(comment);
 
-        Comment findComment = commentRepository.findAll().get(0);
+        Comment findComment = commentRepository.findCommentsByPost(post).get(0);
         assertThat(findComment.getPost().getId()).isEqualTo(post.getId());
         assertThat(findComment.getContent()).isEqualTo(commentString);
     }
@@ -64,12 +63,61 @@ class CommentServiceTest {
     @Test
     @DisplayName("댓글을 비활성화한다.")
     void deactivateCommentTest() {
-        Comment comment = new Comment(null, "content");
+        Post post = new Post("title", "content");
+        postRepository.save(post);
+        Comment comment = new Comment(post, "content"); // post가 null인 경우의 수가 존재하지 않기 때문에 해당 기능이 제공되지는 않지만 테스트의 편의성을 위해 사용하였다. 하지만 이 또한 예외처리가 필요할지 고민 필요
         commentRepository.save(comment);
 
         commentService.deactivateComment(comment.getId());
 
         Comment findComment = commentRepository.findById(comment.getId()).get();
         assertThat(findComment.isActive()).isFalse();
+    }
+
+    @Test
+    @DisplayName("업데이트할 내용이 없다면 업데이트되지 않는다.")
+    void updateUsingEmptyStringTest() {
+        Post post = new Post("title", "content");
+        postRepository.save(post);
+
+        String defaultContent = "content";
+        Comment comment = new Comment(post, defaultContent);
+        commentRepository.save(comment);
+
+        CommentUpdateDto commentUpdateDto = new CommentUpdateDto(comment.getId(), null);
+        commentService.updateComment(commentUpdateDto);
+
+        Comment findComment = commentRepository.findById(comment.getId()).get();
+        assertThat(findComment.getContent()).isEqualTo(defaultContent);
+
+        commentUpdateDto = new CommentUpdateDto(comment.getId(), "");
+        commentService.updateComment(commentUpdateDto);
+
+        findComment = commentRepository.findById(comment.getId()).get();
+        assertThat(findComment.getContent()).isEqualTo(defaultContent);
+
+        commentUpdateDto = new CommentUpdateDto(comment.getId(), "                           ");
+        commentService.updateComment(commentUpdateDto);
+
+        findComment = commentRepository.findById(comment.getId()).get();
+        assertThat(findComment.getContent()).isEqualTo(defaultContent);
+    }
+
+    @Test
+    @DisplayName("업데이트할 내용이 있다면 댓글의 내용이 변경된다.")
+    void updateContentTest() {
+        Post post = new Post("title", "content");
+        postRepository.save(post);
+
+        String defaultContent = "content";
+        Comment comment = new Comment(post, defaultContent);
+        commentRepository.save(comment);
+
+        String updateContent = "updateContent";
+        CommentUpdateDto commentUpdateDto = new CommentUpdateDto(comment.getId(), updateContent);
+        commentService.updateComment(commentUpdateDto);
+
+        Comment findComment = commentRepository.findById(comment.getId()).get();
+        assertThat(findComment.getContent()).isEqualTo(updateContent);
     }
 }

@@ -2,6 +2,7 @@ package hello.board.service;
 
 import hello.board.dto.CommentInsertDto;
 import hello.board.dto.CommentReplyInsertDto;
+import hello.board.dto.CommentUpdateDto;
 import hello.board.entity.Comment;
 import hello.board.entity.Post;
 import hello.board.repository.CommentRepository;
@@ -32,6 +33,14 @@ public class CommentService {
 
         Comment replyComment = comment.newReplyComment(commentReplyInsertDto.getContent());
         commentRepository.saveReplyComment(replyComment);
+    }
+
+    @Transactional
+    public void updateComment(CommentUpdateDto commentUpdateDto) {
+        if (commentUpdateDto.updatable()) {
+            Comment comment = commentById(commentUpdateDto.getCommentId());
+            comment.updateContent(commentUpdateDto.getContent());
+        }
     }
 
     @Transactional
