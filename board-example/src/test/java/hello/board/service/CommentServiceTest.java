@@ -6,11 +6,13 @@ import hello.board.entity.Comment;
 import hello.board.entity.Post;
 import hello.board.repository.CommentRepository;
 import hello.board.repository.PostRepository;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -57,5 +59,17 @@ class CommentServiceTest {
 
         assertThatThrownBy(() -> commentService.saveReplyComment(content))
                 .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("댓글을 비활성화한다.")
+    void deactivateCommentTest() {
+        Comment comment = new Comment(null, "content");
+        commentRepository.save(comment);
+
+        commentService.deactivateComment(comment.getId());
+
+        Comment findComment = commentRepository.findById(comment.getId()).get();
+        assertThat(findComment.isActive()).isFalse();
     }
 }
