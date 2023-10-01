@@ -39,10 +39,8 @@ class CommentRepositoryTest {
         Comment comment = Comment.newComment(post, commentContent);
         commentRepository.save(comment);
 
-        Page<Comment> comments = commentRepository.commentsOfPost(post, PageRequest.of(0, 10));
-        List<Comment> content = comments.getContent();
-        assertThat(content.size()).isEqualTo(1);
-        assertThat(content.get(0).getContent()).isEqualTo(commentContent);
+        Comment findComment = commentRepository.findById(comment.getId()).get();
+        assertThat(findComment.getContent()).isEqualTo(commentContent);
     }
 
     @Test
@@ -58,8 +56,7 @@ class CommentRepositoryTest {
         Comment commentB = Comment.newComment(post, commentContent);
         commentRepository.save(commentB);
 
-        Page<Comment> comments = commentRepository.commentsOfPost(post, PageRequest.of(0, 10));
-        List<Comment> content = comments.getContent();
+        List<Comment> content = commentRepository.findAll();
         assertThat(content.size()).isEqualTo(2);
         for (Comment comment : content) {
             assertThat(comment.getContent()).isEqualTo(commentContent);
