@@ -8,9 +8,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Transactional // 상관없지 않을까 싶었지만 레파지토리를 테스트함에 있어서 다른 테스트들이 영향을 끼치다보니 서비스 테스트에도 transactional을 붙여주어야 할 것 같다.
 @SpringBootTest
 class PostServiceTest {
 

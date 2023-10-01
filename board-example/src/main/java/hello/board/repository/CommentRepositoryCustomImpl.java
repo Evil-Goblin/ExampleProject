@@ -4,6 +4,8 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import hello.board.dto.CommentListDto;
+import hello.board.dto.QCommentListDto;
 import hello.board.entity.Comment;
 import hello.board.entity.Post;
 import jakarta.persistence.EntityManager;
@@ -28,9 +30,10 @@ public class CommentRepositoryCustomImpl implements CommentRepositoryCustom {
         this.jpaQueryFactory = new JPAQueryFactory(em);
     }
 
-    public Page<Comment> commentsOfPost(Post post, Pageable pageable) {
-        List<Comment> fetch = jpaQueryFactory
-                .selectFrom(comment)
+    public Page<CommentListDto> commentsOfPost(Post post, Pageable pageable) {
+        List<CommentListDto> fetch = jpaQueryFactory
+                .select(new QCommentListDto(comment.content, comment.depth))
+                .from(comment)
                 .where(comment.post.eq(post))
                 .orderBy(comment.rootComment.id.desc(), comment.leftNode.desc())
                 .limit(pageable.getPageSize())

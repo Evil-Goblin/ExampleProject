@@ -1,5 +1,6 @@
 package hello.board.repository;
 
+import hello.board.dto.CommentListDto;
 import hello.board.entity.Comment;
 import hello.board.entity.Post;
 import jakarta.persistence.EntityManager;
@@ -76,8 +77,8 @@ class CommentRepositoryTest {
             commentRepository.save(comment);
         }
 
-        Page<Comment> comments = commentRepository.commentsOfPost(post, PageRequest.of(0, 10));
-        List<Comment> content = comments.getContent();
+        Page<CommentListDto> comments = commentRepository.commentsOfPost(post, PageRequest.of(0, 10));
+        List<CommentListDto> content = comments.getContent();
         assertThat(content.size()).isEqualTo(10);
         assertThat(comments.getTotalElements()).isEqualTo(20);
         assertThat(comments.getTotalPages()).isEqualTo(2);
@@ -124,20 +125,22 @@ class CommentRepositoryTest {
         Post post = new Post("title", "content");
         postRepository.save(post);
 
-        String commentContent = "content";
-        Comment commentA = Comment.newComment(post, commentContent);
+        String contentA = "contentA";
+        Comment commentA = Comment.newComment(post, contentA);
         commentRepository.save(commentA);
 
-        Comment commentB = Comment.newComment(post, commentContent);
+        String contentB = "contentB";
+        Comment commentB = Comment.newComment(post, contentB);
         commentRepository.save(commentB);
 
-        Comment replyCommentA = commentA.newReplyComment("newContent");
+        String newContent = "newContent";
+        Comment replyCommentA = commentA.newReplyComment(newContent);
         commentRepository.saveReplyComment(replyCommentA);
 
-        List<Comment> content = commentRepository.commentsOfPost(post, PageRequest.of(0, 10)).getContent();
-        assertThat(content.get(0)).isEqualTo(commentB);
-        assertThat(content.get(1)).isEqualTo(replyCommentA);
-        assertThat(content.get(2)).isEqualTo(commentA);
+        List<CommentListDto> content = commentRepository.commentsOfPost(post, PageRequest.of(0, 10)).getContent();
+        assertThat(content.get(0).getContent()).isEqualTo(contentB);
+        assertThat(content.get(1).getContent()).isEqualTo(newContent);
+        assertThat(content.get(2).getContent()).isEqualTo(contentA);
     }
 
     @Test
