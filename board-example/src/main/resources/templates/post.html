@@ -1,0 +1,10 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/header :: header}"></head>
+<body>
+<div class="container">
+    <label th:text="${responseDto.getTitle()}"></label>
+    <p th:text="${responseDto.getContent()}"></p>
+</div>
+</body>
+</html>
