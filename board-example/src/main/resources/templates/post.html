@@ -3,8 +3,39 @@
 <head th:replace="~{fragments/header :: header}"></head>
 <body>
 <div class="container">
-    <label th:text="${responseDto.getTitle()}"></label>
-    <p th:text="${responseDto.getContent()}"></p>
+    <section class="mb-2">
+        <div class="card bg-light">
+            <div class="card-body mb-3">
+                <h1 class="card-title" th:text="${responseDto.getTitle()}"></h1>
+                <div class="card-subtitle d-flex flex-row-reverse">
+                    <h6 th:text="'글 번호: ' + ${responseDto.getPostId()}"></h6>
+                </div>
+                <p class="card-text" th:text="${responseDto.getContent()}"></p>
+            </div>
+        </div>
+    </section>
+    <section class="mb-2">
+        <div class="card bg-light">
+            <div class="card-body">
+                <div class="mb-4" th:each="comment : ${responseDto.getComments()}" th:style="'margin-left:' + ${comment.depth} + 'rem !important'">
+                        <p class="mb-2" th:text="${comment.content}"></p>
+                        <form class="collapse mb-2" th:id="'replyComment_' + ${comment.commentId}" action="/comment/reply" method="post">
+                            <input type="hidden" name="postId" th:value="${responseDto.getPostId()}">
+                            <input type="hidden" name="parentCommentId" th:value="${comment.commentId}">
+                            <textarea class="form-control mb-2" rows="3" name="content" placeholder="insert Comment"></textarea>
+                            <button type="submit" class="btn btn-primary">Comment</button>
+                        </form>
+                        <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="collapse" th:data-bs-target="'#replyComment_' + ${comment.commentId}">대댓글</button>
+                </div>
+                <form class="mb-4" action="/comment/add" method="post">
+                    <input type="hidden" name="postId" th:value="${responseDto.getPostId()}">
+                    <textarea class="form-control mb-4" rows="3" name="content" placeholder="insert Comment"></textarea>
+                    <button type="submit" class="btn btn-primary">Comment</button>
+                </form>
+            </div>
+        </div>
+    </section>
+    <a class="btn btn-primary" href="/posts">목록으로</a>
 </div>
 </body>
 </html>
