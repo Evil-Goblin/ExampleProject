@@ -32,7 +32,7 @@ public class CommentRepositoryCustomImpl implements CommentRepositoryCustom {
 
     public Page<CommentListDto> commentsOfPost(Post post, Pageable pageable) {
         List<CommentListDto> fetch = jpaQueryFactory
-                .select(new QCommentListDto(comment.content, comment.depth))
+                .select(new QCommentListDto(comment.id, comment.content, comment.depth, comment.active))
                 .from(comment)
                 .where(comment.post.eq(post))
                 .orderBy(comment.rootComment.id.desc(), comment.leftNode.desc())
