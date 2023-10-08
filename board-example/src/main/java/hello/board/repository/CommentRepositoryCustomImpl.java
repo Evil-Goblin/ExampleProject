@@ -35,7 +35,7 @@ public class CommentRepositoryCustomImpl implements CommentRepositoryCustom {
                 .select(new QCommentListDto(comment.id, comment.content, comment.depth, comment.active))
                 .from(comment)
                 .where(comment.post.eq(post))
-                .orderBy(comment.rootComment.id.desc(), comment.leftNode.desc())
+                .orderBy(comment.rootComment.id.desc(), comment.leftNode.asc())
                 .limit(pageable.getPageSize())
                 .offset(pageable.getOffset())
                 .fetch();

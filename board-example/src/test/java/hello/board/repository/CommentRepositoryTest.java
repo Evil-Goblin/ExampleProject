@@ -139,8 +139,8 @@ class CommentRepositoryTest {
 
         List<CommentListDto> content = commentRepository.commentsOfPost(post, PageRequest.of(0, 10)).getContent();
         assertThat(content.get(0).getContent()).isEqualTo(contentB);
-        assertThat(content.get(1).getContent()).isEqualTo(newContent);
-        assertThat(content.get(2).getContent()).isEqualTo(contentA);
+        assertThat(content.get(1).getContent()).isEqualTo(contentA);
+        assertThat(content.get(2).getContent()).isEqualTo(newContent);
     }
 
     @Test
