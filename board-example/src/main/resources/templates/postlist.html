@@ -4,6 +4,9 @@
 <body>
 
 <div class="container">
+    <div class="d-flex flex-row-reverse mb-4">
+        <a class="btn btn-primary" href="/post/add">글쓰기</a>
+    </div>
     <table class="table table-striped">
         <thead>
         <tr>
@@ -18,7 +21,7 @@
         </tr>
         </tbody>
     </table>
-    <nav aria-label="Page navigation example">
+    <nav aria-label="Page navigation">
         <ul class="pagination" th:with="total=${posts.getTotalPages()}, nowPage=${posts.getNumber() + 1}, startPage=${(nowPage - 2) > 0 ? nowPage - 2 : nowPage}, endPage=${total == 0 ? 1 : (nowPage + 2 <= total ? nowPage + 2 : total)}">
             <li class="page-item" th:if="${startPage > 1}">
                 <a class="page-link" href="#" aria-label="Previous">
