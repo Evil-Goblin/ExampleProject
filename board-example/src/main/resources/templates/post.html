@@ -33,6 +33,23 @@
                     <button type="submit" class="btn btn-primary">Comment</button>
                 </form>
             </div>
+            <nav aria-label="Page navigation">
+                <ul class="pagination" th:with="total=${responseDto.getComments().getTotalPages()}, nowPage=${responseDto.getComments().getNumber() + 1}, startPage=${(nowPage - 2) > 0 ? nowPage - 2 : 1}, endPage=${total == 0 ? 1 : (nowPage + 2 <= total ? nowPage + 2 : total)}">
+                    <li class="page-item" th:if="${startPage > 1}">
+                        <a class="page-link" th:href="@{/post/{postId}(postId=${responseDto.getPostId()} ,page=${startPage - 2}, size=${responseDto.getComments().getSize()})}" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    <li class="page-item" th:each="page: ${#numbers.sequence(startPage, endPage)}">
+                        <a class="page-link" th:text="${page}" th:classappend="${page == nowPage} ? active" th:href="@{/post/{postId}(postId=${responseDto.getPostId()} ,page=${page - 1}, size=${responseDto.getComments().getSize()})}"></a>
+                    </li>
+                    <li class="page-item" th:if="${endPage < total}">
+                        <a class="page-link" th:href="@{/post/{postId}(postId=${responseDto.getPostId()} ,page=${endPage}, size=${responseDto.getComments().getSize()})}"  aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
         </div>
     </section>
     <a class="btn btn-primary" href="/posts">목록으로</a>
