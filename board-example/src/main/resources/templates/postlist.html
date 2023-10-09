@@ -17,7 +17,7 @@
         <tbody>
         <tr th:each="post : ${posts}">
             <td th:text="${post.postId}"></td>
-            <td th:text="${post.title}"></td>
+            <td><a th:text="${post.title}" th:href="'/post/' + ${post.postId}"></a></td>
         </tr>
         </tbody>
     </table>
