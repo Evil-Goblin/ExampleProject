@@ -1,6 +1,6 @@
 package hello.board.dto;
 
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 
@@ -12,7 +12,7 @@ public class CommentReplyInsertDto {
     @NotNull
     private Long parentCommentId;
 
-    @NotEmpty
+    @NotBlank(message = "대댓글 내용을 입력해주세요.")
     private String content;
 
     public CommentReplyInsertDto(Long postId, Long parentCommentId, String content) {

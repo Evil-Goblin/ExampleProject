@@ -4,6 +4,7 @@ import hello.board.dto.PostDto;
 import hello.board.dto.PostResponseDto;
 import hello.board.service.PageService;
 import hello.board.service.PostService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
@@ -28,7 +29,7 @@ public class PostController {
     }
 
     @PostMapping("/add")
-    public String registryPost(PostDto postDto, RedirectAttributes redirectAttributes) {
+    public String registryPost(@Valid PostDto postDto, RedirectAttributes redirectAttributes) {
         Long postId = postService.savePost(postDto);
 
         redirectAttributes.addAttribute("postId", postId);
