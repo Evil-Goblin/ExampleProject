@@ -63,7 +63,7 @@ public class Comment extends BaseEntity {
 
     public Comment newReplyComment(String content) {
         if (this.depth >= MAX_DEPTH) {
-            throw new IllegalStateException(/*MAXIMUM depth*/);
+            throw new IllegalStateException("작성 가능한 댓글 깊이를 초과하였습니다.");
         }
 
         return Comment.builder()

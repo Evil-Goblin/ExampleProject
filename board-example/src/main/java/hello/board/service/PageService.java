@@ -46,6 +46,6 @@ public class PageService {
 
     private Post postById(Long postId) {
         return postRepository.findById(postId)
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
     }
 }

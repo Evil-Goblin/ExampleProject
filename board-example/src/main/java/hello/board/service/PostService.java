@@ -45,7 +45,7 @@ public class PostService {
 
     private Post postById(PostUpdateDto postUpdateDto) {
         return postRepository.findById(postUpdateDto.getPostId())
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 글입니다."));
     }
 
 }
