@@ -3,6 +3,7 @@ package hello.board.service;
 import hello.board.dto.CommentListDto;
 import hello.board.dto.PostListDto;
 import hello.board.dto.PostResponseDto;
+import hello.board.dto.SearchCond;
 import hello.board.entity.Post;
 import hello.board.repository.CommentRepository;
 import hello.board.repository.PostRepository;
@@ -42,6 +43,10 @@ public class PageService {
                 .content(post.getContent())
                 .comments(commentListDtos)
                 .build();
+    }
+
+    public Page<PostListDto> searchPosts(SearchCond searchCond, Pageable pageable) {
+        return postRepository.findPostListBySearchCond(searchCond, pageable);
     }
 
     private Post postById(Long postId) {
