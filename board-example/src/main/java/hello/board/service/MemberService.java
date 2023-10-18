@@ -19,6 +19,12 @@ public class MemberService implements UserDetailsService {
     private final PasswordEncoder passwordEncoder;
 
     public void signUpMember(SignUpDto signUpDto) {
+        memberRepository.findByUsername(signUpDto.getUsername())
+                .ifPresent(member -> {
+                            throw new IllegalStateException(member.getUsername() + "은(는) 이미 존재하는 회원입니다.");
+                        }
+                );
+
         Member member = Member.builder()
                 .username(signUpDto.getUsername())
                 .password(signUpDto.getPassword())
