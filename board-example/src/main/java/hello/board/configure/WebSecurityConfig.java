@@ -8,6 +8,7 @@ import org.springframework.security.config.annotation.web.configurers.LogoutConf
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 
 @Configuration
 @EnableWebSecurity
@@ -21,6 +22,8 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
+                .csrf(httpSecurityCsrfConfigurer -> httpSecurityCsrfConfigurer
+                        .csrfTokenRepository(new HttpSessionCsrfTokenRepository()))
                 .authorizeHttpRequests(authorizationManagerRequestMatcherRegistry -> authorizationManagerRequestMatcherRegistry
                         .requestMatchers("/post/add/**").authenticated()
                         .requestMatchers("/", "/posts/**", "/post/**", "/signup/**", "/css/**", "/js/**").permitAll()
