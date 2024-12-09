@@ -1,0 +1,22 @@
+= CasePost
+:toc:
+:source-highlighter: highlightjs
+:sectlinks:
+
+== Post 을 이용한 요청
+=== 성공 요청
+include::{snippets}/CasePost/http-request.adoc[]
+include::{snippets}/CasePost/request-fields.adoc[]
+
+=== 성공 응답
+include::{snippets}/CasePost/http-response.adoc[]
+include::{snippets}/CasePost/response-fields.adoc[]
+
+== Post 요청 실패
+=== 실패 요청
+include::{snippets}/CasePost-Error/http-request.adoc[]
+include::{snippets}/CasePost-Error/request-fields.adoc[]
+
+=== 실패 응답
+include::{snippets}/CasePost-Error/http-response.adoc[]
+include::{snippets}/CasePost-Error/response-fields.adoc[]
