@@ -1,0 +1,22 @@
+spring:
+  data:
+    mongodb:
+      auto-index-creation: true
+logging:
+  level:
+    org:
+      springframework:
+        data:
+          mongodb:
+            core:
+              MongoTemplate: TRACE
+      mongodb:
+        driver:
+          protocol:
+            command: TRACE
+app:
+  debug: true
+
+testcontainers:
+  reuse:
+    enable: true
